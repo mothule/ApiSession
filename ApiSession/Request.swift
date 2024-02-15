@@ -15,9 +15,9 @@ public enum HttpMethod: String {
     case delete
 }
 
-public protocol ApiRequestable {
-    associatedtype Response: ApiResponsable
-    associatedtype ErrorResponse: ApiResponsable
+public protocol HttpRequestable {
+    associatedtype SuccessBodyResponse: BodyResponsable
+    associatedtype ErrorBodyResponse: BodyResponsable
     
     var url: URL? { get }
     var httpMethod: HttpMethod { get }
@@ -30,16 +30,16 @@ public protocol ApiRequestable {
     var requestTimeoutInterval: TimeInterval? { get }
     
     /// レスポンスボディからレスポンスモデルへデコードする
-    func decodeResponseBody(data: Data) throws -> Response
+    func decodeResponseBody(data: Data) throws -> SuccessBodyResponse
     
     /// エラー時のレスポンスボディからモデルへデコードする
-    func decodeErrorResponseBody(data: Data) throws -> ErrorResponse
+    func decodeErrorResponseBody(data: Data) throws -> ErrorBodyResponse
     
     /// URLRequestに変換する
     func urlRequest() -> URLRequest?
 }
 
-extension ApiRequestable {
+extension HttpRequestable {
     func urlRequest() -> URLRequest? {
         guard let url else { return nil }
         var ret =  URLRequest(url: url)

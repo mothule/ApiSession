@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		54DC82312B7E804A002EFDDE /* URLSessionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DC82302B7E804A002EFDDE /* URLSessionAdapter.swift */; };
+		54DC82332B7E81DC002EFDDE /* URLSessionAdapterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DC82322B7E81DC002EFDDE /* URLSessionAdapterMock.swift */; };
 		54E8C15C2B7A5E5000542A83 /* ApiSession.docc in Sources */ = {isa = PBXBuildFile; fileRef = 54E8C15B2B7A5E5000542A83 /* ApiSession.docc */; };
 		54E8C1622B7A5E5000542A83 /* ApiSession.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54E8C1572B7A5E5000542A83 /* ApiSession.framework */; };
 		54E8C1672B7A5E5000542A83 /* ApiSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E8C1662B7A5E5000542A83 /* ApiSessionTests.swift */; };
@@ -28,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		54DC82302B7E804A002EFDDE /* URLSessionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAdapter.swift; sourceTree = "<group>"; };
+		54DC82322B7E81DC002EFDDE /* URLSessionAdapterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAdapterMock.swift; sourceTree = "<group>"; };
 		54E8C1572B7A5E5000542A83 /* ApiSession.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ApiSession.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E8C15A2B7A5E5000542A83 /* ApiSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApiSession.h; sourceTree = "<group>"; };
 		54E8C15B2B7A5E5000542A83 /* ApiSession.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = ApiSession.docc; sourceTree = "<group>"; };
@@ -82,6 +86,7 @@
 				54E8C15A2B7A5E5000542A83 /* ApiSession.h */,
 				54E8C15B2B7A5E5000542A83 /* ApiSession.docc */,
 				54E8C1712B7A5E9800542A83 /* ApiSession.swift */,
+				54DC82302B7E804A002EFDDE /* URLSessionAdapter.swift */,
 				54E8C1732B7A60F200542A83 /* Request.swift */,
 				54E8C1752B7A611400542A83 /* Response.swift */,
 				54E8C1772B7A612800542A83 /* Error.swift */,
@@ -93,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				54E8C1662B7A5E5000542A83 /* ApiSessionTests.swift */,
+				54DC82322B7E81DC002EFDDE /* URLSessionAdapterMock.swift */,
 			);
 			path = ApiSessionTests;
 			sourceTree = "<group>";
@@ -206,6 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54DC82312B7E804A002EFDDE /* URLSessionAdapter.swift in Sources */,
 				54E8C1762B7A611400542A83 /* Response.swift in Sources */,
 				54E8C15C2B7A5E5000542A83 /* ApiSession.docc in Sources */,
 				54E8C1742B7A60F200542A83 /* Request.swift in Sources */,
@@ -218,6 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54DC82332B7E81DC002EFDDE /* URLSessionAdapterMock.swift in Sources */,
 				54E8C1672B7A5E5000542A83 /* ApiSessionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

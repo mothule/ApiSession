@@ -15,26 +15,26 @@ public protocol SessionProtocol {
     ///     - request: HTTPリクエスト
     /// - Returns: リクエストに指定された方法でデコードされたペイロードを含むレスポンス
     /// - Throws: ApiError
-    func sendHttpRequest<Request: ApiRequestable>(_ request: Request) async throws -> ApiResponse<Request.Response>
+    func sendHttpRequest<Request: HttpRequestable>(_ request: Request) async throws -> HttpResponse<Request.SuccessBodyResponse, Request.ErrorBodyResponse>
 }
 
 extension SessionProtocol {
-    func sendHttpRequest<Request: ApiRequestable>(_ request: Request) async throws -> Request.Response {
-        return try await sendHttpRequest(request).body
-    }
+//    func sendHttpRequest<Request: ApiRequestable>(_ request: Request) async throws -> Request.Response {
+//        return try await sendHttpRequest(request).body
+//    }
 }
 
 public class Session: SessionProtocol {
-    public let session: URLSession
+    public let session: URLSessionAdapter
     
     /// shared instance is using URLSession.shared.
-    public static var shared: SessionProtocol = Session(session: .shared)
+    public static var shared: SessionProtocol = Session(session: URLSession.shared)
     
-    public init(session: URLSession) {
+    public init(session: URLSessionAdapter) {
         self.session = session
     }
     
-    public func sendHttpRequest<Request: ApiRequestable>(_ request: Request) async throws -> ApiResponse<Request.Response> {
+    public func sendHttpRequest<Request: HttpRequestable>(_ request: Request) async throws -> HttpResponse<Request.SuccessBodyResponse, Request.ErrorBodyResponse> {
         guard let urlRequest = request.urlRequest() else { throw ApiError.requestError }
         
         do {
@@ -43,16 +43,14 @@ public class Session: SessionProtocol {
             guard let httpUrlResponse = urlResponse as? HTTPURLResponse else {
                 throw ApiError.responseError(.cannotCastHTTPURLResponse)
             }
-            guard 200..<300 ~= httpUrlResponse.statusCode else {
-                let errorResponse = try request.decodeErrorResponseBody(data: data)
-                throw ApiError.httpError(httpUrlResponse.statusCode, errorResponse)
-            }
-            
-            // Success
-            
             do {
-                let body = try request.decodeResponseBody(data: data)
-                return .init(httpUrlResponse: httpUrlResponse, body: body)
+                if 200..<300 ~= httpUrlResponse.statusCode {
+                    let successBodyResponse = try request.decodeResponseBody(data: data)
+                    return .makeSuccess(response: httpUrlResponse, body: successBodyResponse)
+                } else {
+                    let errorBodyResponse = try request.decodeErrorResponseBody(data: data)
+                    return .makeError(response: httpUrlResponse, body: errorBodyResponse)
+                }
             } catch let error as DecodingError {
                 throw ApiError.responseError(.decodeError(error))
             }
