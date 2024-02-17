@@ -13,6 +13,3 @@ public protocol URLSessionAdapter {
 }
 
 extension URLSession: URLSessionAdapter {}
-
-
-
