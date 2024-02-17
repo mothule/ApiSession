@@ -41,7 +41,7 @@ public protocol HttpRequestable {
 }
 
 extension HttpRequestable {
-    func urlRequest() -> URLRequest? {
+    public func urlRequest() -> URLRequest? {
         guard let url else { return nil }
         var ret =  URLRequest(url: url)
         if let cachePolicy = cachePolicy {
