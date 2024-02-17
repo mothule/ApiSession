@@ -12,21 +12,46 @@ public enum ApiError: LocalizedError & CustomNSError {
     /// 通信プロセスや通信経路上に問題が発生
     case networkError
     /// リクエスト処理でエラー
-    case requestError
+    case requestError(ApiRequestError)
     /// レスポンス処理でエラー
     case responseError(ApiResponseError)
-    /// HTTPステータスエラー
-    case httpError(Int, ApiResponsable)
     
     case urlError(URLError)
     
     case unknown(Error)
 }
 
-public enum ApiResponseError: LocalizedError & CustomNSError {
+extension ApiError: Equatable {
+    public static func == (lhs: ApiError, rhs: ApiError) -> Bool {
+        switch (lhs, rhs) {
+        case (.networkError, .networkError): return true
+        case (.requestError(let l), .requestError(let r)): return l == r
+        case (.responseError(let l), .responseError(let r)): return l == r
+        case (.urlError(let l), .urlError(let r)): return l == r
+        case (.unknown(let l), .unknown(let r)):
+            return (l as NSError).code == (r as NSError).code &&
+            (l as NSError).domain == (r as NSError).domain
+        default: return false
+        }
+    }
+}
+
+public enum ApiRequestError: LocalizedError & CustomNSError {
+    case cannotURLRequest
     case cannotCastHTTPURLResponse
+}
+extension ApiRequestError: Equatable {
+}
+
+public enum ApiResponseError: LocalizedError & CustomNSError {
     case decodeError(DecodingError)
-    case underlyingError(Error)
+}
+extension ApiResponseError: Equatable {
+    public static func == (lhs: ApiResponseError, rhs: ApiResponseError) -> Bool {
+        switch (lhs, rhs) {
+        case (.decodeError(let l), .decodeError(let r)): return l == r
+        }
+    }
 }
 
 
@@ -64,5 +89,11 @@ extension DecodingError: CustomDebugStringConvertible {
         @unknown default:
             fatalError("Not supported type.")
         }
+    }
+}
+
+extension DecodingError: Equatable {
+    public static func == (lhs: DecodingError, rhs: DecodingError) -> Bool {
+        lhs.debugDescription == rhs.debugDescription
     }
 }

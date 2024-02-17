@@ -18,12 +18,6 @@ public protocol SessionProtocol {
     func sendHttpRequest<Request: HttpRequestable>(_ request: Request) async throws -> HttpResponse<Request.SuccessBodyResponse, Request.ErrorBodyResponse>
 }
 
-extension SessionProtocol {
-//    func sendHttpRequest<Request: ApiRequestable>(_ request: Request) async throws -> Request.Response {
-//        return try await sendHttpRequest(request).body
-//    }
-}
-
 public class Session: SessionProtocol {
     public let session: URLSessionAdapter
     
@@ -34,14 +28,14 @@ public class Session: SessionProtocol {
         self.session = session
     }
     
-    public func sendHttpRequest<Request: HttpRequestable>(_ request: Request) async throws -> HttpResponse<Request.SuccessBodyResponse, Request.ErrorBodyResponse> {
-        guard let urlRequest = request.urlRequest() else { throw ApiError.requestError }
+    public func sendHttpRequest<Request: HttpRequestable>(_ request: Request) async throws -> Request.Response { 
+        guard let urlRequest = request.urlRequest() else { throw ApiError.requestError(.cannotURLRequest) }
         
         do {
             let (data, urlResponse) = try await session.data(for: urlRequest)
             
             guard let httpUrlResponse = urlResponse as? HTTPURLResponse else {
-                throw ApiError.responseError(.cannotCastHTTPURLResponse)
+                throw ApiError.requestError(.cannotCastHTTPURLResponse)
             }
             do {
                 if 200..<300 ~= httpUrlResponse.statusCode {

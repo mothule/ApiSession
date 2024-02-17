@@ -18,6 +18,7 @@ public enum HttpMethod: String {
 public protocol HttpRequestable {
     associatedtype SuccessBodyResponse: BodyResponsable
     associatedtype ErrorBodyResponse: BodyResponsable
+    typealias Response = HttpResponse<SuccessBodyResponse, ErrorBodyResponse>
     
     var url: URL? { get }
     var httpMethod: HttpMethod { get }

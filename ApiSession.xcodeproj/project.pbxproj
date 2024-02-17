@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		54DC82312B7E804A002EFDDE /* URLSessionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DC82302B7E804A002EFDDE /* URLSessionAdapter.swift */; };
 		54DC82332B7E81DC002EFDDE /* URLSessionAdapterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DC82322B7E81DC002EFDDE /* URLSessionAdapterMock.swift */; };
+		54DC82352B80A9A6002EFDDE /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DC82342B80A9A6002EFDDE /* TestHelper.swift */; };
 		54E8C15C2B7A5E5000542A83 /* ApiSession.docc in Sources */ = {isa = PBXBuildFile; fileRef = 54E8C15B2B7A5E5000542A83 /* ApiSession.docc */; };
 		54E8C1622B7A5E5000542A83 /* ApiSession.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54E8C1572B7A5E5000542A83 /* ApiSession.framework */; };
 		54E8C1672B7A5E5000542A83 /* ApiSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E8C1662B7A5E5000542A83 /* ApiSessionTests.swift */; };
@@ -32,6 +33,7 @@
 /* Begin PBXFileReference section */
 		54DC82302B7E804A002EFDDE /* URLSessionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAdapter.swift; sourceTree = "<group>"; };
 		54DC82322B7E81DC002EFDDE /* URLSessionAdapterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAdapterMock.swift; sourceTree = "<group>"; };
+		54DC82342B80A9A6002EFDDE /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
 		54E8C1572B7A5E5000542A83 /* ApiSession.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ApiSession.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		54E8C15A2B7A5E5000542A83 /* ApiSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApiSession.h; sourceTree = "<group>"; };
 		54E8C15B2B7A5E5000542A83 /* ApiSession.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = ApiSession.docc; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 			children = (
 				54E8C1662B7A5E5000542A83 /* ApiSessionTests.swift */,
 				54DC82322B7E81DC002EFDDE /* URLSessionAdapterMock.swift */,
+				54DC82342B80A9A6002EFDDE /* TestHelper.swift */,
 			);
 			path = ApiSessionTests;
 			sourceTree = "<group>";
@@ -161,7 +164,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					54E8C1562B7A5E5000542A83 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -225,6 +228,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54DC82352B80A9A6002EFDDE /* TestHelper.swift in Sources */,
 				54DC82332B7E81DC002EFDDE /* URLSessionAdapterMock.swift in Sources */,
 				54E8C1672B7A5E5000542A83 /* ApiSessionTests.swift in Sources */,
 			);
@@ -369,6 +373,7 @@
 		54E8C16C2B7A5E5000542A83 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -400,6 +405,7 @@
 		54E8C16D2B7A5E5000542A83 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;

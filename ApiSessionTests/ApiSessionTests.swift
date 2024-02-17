@@ -24,19 +24,7 @@ final class ApiSessionTests: XCTestCase {
     }
 
     func test_HttpAPIは正常レスポンスを返す() async throws {
-        mockAdapter.dataForHandler = { (request) throws -> (Data, URLResponse) in
-            return (
-                Data(
-                """
-                {
-                    "name": "NAME",
-                    "age": 15
-                }
-                """.utf8),
-                HTTPURLResponse(url: self.anyValidUrl, statusCode: 200, httpVersion: "1.1", headerFields: nil)! as URLResponse
-            )
-        }
-        
+        mockAdapter.setupDataForHandler(object: ["name": "NAME", "age": 15], statusCode: 200)
         let req = HogeRequest(urlString: anyValidUrl.absoluteString)
         let res = try await target.sendHttpRequest(req)
         XCTAssertEqual(res.statusCode, 200)
@@ -46,18 +34,7 @@ final class ApiSessionTests: XCTestCase {
     }
     
     func test_HttpAPIはエラーレスポンスを返す() async throws {
-        mockAdapter.dataForHandler = { (request) throws -> (Data, URLResponse) in
-            return (
-                Data(
-                """
-                {
-                    "code": "E01002",
-                    "message": "I have not a pen"
-                }
-                """.utf8),
-                HTTPURLResponse(url: self.anyValidUrl, statusCode: 400, httpVersion: "1.1", headerFields: nil)! as URLResponse
-            )
-        }
+        mockAdapter.setupDataForHandler(object: ["code": "E01002", "message": "I have not a pen"], statusCode: 400)
         
         let req = HogeRequest(urlString: anyValidUrl.absoluteString)
         let res = try await target.sendHttpRequest(req)
@@ -67,31 +44,56 @@ final class ApiSessionTests: XCTestCase {
         XCTAssertEqual(res.errorBody?.message, "I have not a pen")
     }
     
-    func test_HttpAPIで正常系レスポンスのデコードエラーが発生したら例外を投げる() {
-        
+    func test_HttpAPIで正常系レスポンスのデコードエラーが発生したら例外を投げる() async throws {
+        mockAdapter.setupDataForHandler(object: ["": ""], statusCode: 200)
+        let req = HogeRequest(urlString: anyValidUrl.absoluteString)
+        await XCTAssertThrowsError(try await self.target.sendHttpRequest(req))
     }
     
-    func test_HttpAPIで異常系レスポンスのデコードエラーが発生したら例外を投げる() {
-        
+    func test_HttpAPIで異常系レスポンスのデコードエラーが発生したら例外を投げる() async {
+        mockAdapter.setupDataForHandler(object: ["": ""], statusCode: 400)
+        let req = HogeRequest(urlString: anyValidUrl.absoluteString)
+        await XCTAssertThrowsError(try await self.target.sendHttpRequest(req))
     }
     
-    func test_リクエスト作成に失敗したら例外を投げる() {
-        
+    func test_URLRequest作成に失敗したら例外を投げる() async {
+        mockAdapter.setupDataForHandler(object: ["name": "NAME", "age": 15], statusCode: 200)
+        let req = HogeRequest(urlString: "")
+        await XCTAssertThrowsError(try await self.target.sendHttpRequest(req)) { error in
+            let error = try! XCTUnwrap(error as? ApiError)
+            XCTAssertEqual(error, ApiError.requestError(.cannotURLRequest))
+        }
     }
     
-    func test_URL先の接続に失敗したら例外を投げる() {
-        
+    func test_URL先の接続に失敗したら例外を投げる() async {
+        mockAdapter.dataForHandler = { (req) throws -> (Data, URLResponse) in
+            throw URLError(URLError.appTransportSecurityRequiresSecureConnection)
+        }
+        let req = HogeRequest(urlString: anyValidUrl.absoluteString)
+        await XCTAssertThrowsError(try await self.target.sendHttpRequest(req)) { error in
+            let error = try! XCTUnwrap(error as? ApiError)
+            XCTAssertEqual(error, ApiError.urlError(URLError(.appTransportSecurityRequiresSecureConnection)))
+        }
     }
     
-    func test_Httpリクエスト通信プロセスで何らかのエラーが起きたら例外を投げる() {
-        
+    func test_Httpリクエスト通信プロセスで何らかのエラーが起きたら例外を投げる() async {
+        let nsError = NSError(domain: "com.mothule.ApiSession", code: -1)
+        mockAdapter.dataForHandler = { (req) throws -> (Data, URLResponse) in
+            throw nsError
+        }
+        let req = HogeRequest(urlString: anyValidUrl.absoluteString)
+        await XCTAssertThrowsError(try await self.target.sendHttpRequest(req)) { error in
+            let error = try! XCTUnwrap(error as? ApiError)
+            XCTAssertEqual(error, ApiError.unknown(nsError))
+        }
     }
 }
 
 
+
 private struct HogeRequest: HttpRequestable {
-    typealias Response = HogeResponse
-    typealias ErrorResponse = HogeErrorResponse
+    typealias SuccessBodyResponse = HogeResponse
+    typealias ErrorBodyResponse = HogeErrorResponse
     
     var urlString: String
     

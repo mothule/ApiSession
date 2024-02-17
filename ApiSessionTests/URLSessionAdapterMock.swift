@@ -23,4 +23,35 @@ class URLSessionAdapterMock: URLSessionAdapter {
             }
         }
     }
+    
+    func setupDataForHandler(bodyString: String, statusCode: Int) {
+        let response = (
+            Data(bodyString.utf8),
+            HTTPURLResponse(
+                url: .init(string: "https://valid-url.jp")!,
+                statusCode: statusCode,
+                httpVersion: "1.1",
+                headerFields: nil
+            )! as URLResponse
+        )
+        dataForHandler = { (request) throws -> (Data, URLResponse) in
+            return response
+        }
+    }
+    
+    func setupDataForHandler(object: Any, statusCode: Int) {
+        let data = try! JSONSerialization.data(withJSONObject: object)
+        let response = (
+            data,
+            HTTPURLResponse(
+                url: .init(string: "https://valid-url.jp")!,
+                statusCode: statusCode,
+                httpVersion: "1.1",
+                headerFields: nil
+            )! as URLResponse
+        )
+        dataForHandler = { (request) throws -> (Data, URLResponse) in
+            return response
+        }
+    }
 }
