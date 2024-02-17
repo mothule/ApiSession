@@ -89,19 +89,26 @@ final class ApiSessionTests: XCTestCase {
     }
 }
 
-
-
-private struct HogeRequest: HttpRequestable {
+struct HogeCreateRequest: HttpRequestable {
     typealias SuccessBodyResponse = HogeResponse
     typealias ErrorBodyResponse = HogeErrorResponse
     
     var urlString: String
-    
+    var name: String
+    var age: Int
     var url: URL? { .init(string: urlString) }
+    var httpMethod: ApiSession.HttpMethod { .post }
+    var httpHeaderFields: [String: String]? {
+        ["Content-Type": "application/json" ]
+    }
+    var httpBody: Data? {
+        Data("""
+        {
+            "name": "\(name)", "age": \(age)
+        }
+        """.utf8)
+    }
     
-    var httpMethod: ApiSession.HttpMethod { .get }
-    
-    var httpHeaderFields: [String : String]?
     var cachePolicy: URLRequest.CachePolicy?
     var requestTimeoutInterval: TimeInterval?
     
@@ -114,12 +121,42 @@ private struct HogeRequest: HttpRequestable {
     }
 }
 
-private struct HogeResponse: BodyResponsable {
+
+struct HogeRequest: HttpRequestable {
+    typealias SuccessBodyResponse = HogeResponse
+    typealias ErrorBodyResponse = HogeErrorResponse
+    
+    var urlString: String
+    
+    var url: URL? { .init(string: urlString) }
+    
+    var httpMethod: ApiSession.HttpMethod { .get }
+    
+    var httpHeaderFields: [String : String]? {
+        [
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        ]
+    }
+    var httpBody: Data? = nil
+    var cachePolicy: URLRequest.CachePolicy?
+    var requestTimeoutInterval: TimeInterval?
+    
+    func decodeResponseBody(data: Data) throws -> HogeResponse {
+        try JSONDecoder().decode(HogeResponse.self, from: data)
+    }
+    
+    func decodeErrorResponseBody(data: Data) throws -> HogeErrorResponse {
+        try JSONDecoder().decode(HogeErrorResponse.self, from: data)
+    }
+}
+
+struct HogeResponse: BodyResponsable {
     var name: String
     var age: Int
 }
 
-private struct HogeErrorResponse: BodyResponsable {
+struct HogeErrorResponse: BodyResponsable {
     var code: String
     var message: String
 }

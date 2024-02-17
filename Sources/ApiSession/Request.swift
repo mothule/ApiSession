@@ -23,6 +23,7 @@ public protocol HttpRequestable {
     var url: URL? { get }
     var httpMethod: HttpMethod { get }
     var httpHeaderFields: [String: String]? { get }
+    var httpBody: Data? { get }
     
     /// リクエスト毎のキャッシュポリシー. nilならConfigurationの値を使う
     var cachePolicy: URLRequest.CachePolicy? { get }
@@ -51,6 +52,9 @@ extension HttpRequestable {
             ret.timeoutInterval = timeoutInterval
         }
         ret.httpMethod = httpMethod.rawValue
+        if let httpBody {
+            ret.httpBody = httpBody
+        }
         return ret
     }
 }
